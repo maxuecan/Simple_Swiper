@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			*{
+				margin: 0;
+				padding: 0;
+			}
+			.swiper-container {
+				width: 100%;
+				height: 270px;
+				margin: 0 auto;
+				position: relative;
+				overflow: hidden;
+				transform-style: preserve-3d;
+			}
+			ul li {
+				list-style: none;
+			}
+			ul {
+				width: 1000px;
+				height: 100%;
+				margin: 0 auto;
+				margin-top: 10px;
+				position: relative;
+			}
+			li {
+				width: 499px;
+				height: 231px;
+				margin: 0 auto;
+				position: relative;
+				border: 1px solid deepskyblue;
+				cursor: pointer
+			}
+			.li1 {
+				position: absolute;
+				left: 0;
+				transform: translateX(-200px) scale(0.55);
+				background-color: aquamarine;
+				z-index: -3;
+			}
+			.li2 {
+				position: absolute;
+				left: 0;
+				transform: translateX(-100px) scale(0.65);
+				background-color: bisque;
+				z-index: -2;
+			}
+			.li3 {
+				position: absolute;
+				left: 0;
+				transform: translateX(0px) scale(0.8);
+				background-color: coral;
+				z-index: -1;
+			}
+			.li4 {
+				position: absolute;
+				left: 0;
+				transform: translateX(250px) scale(0.9);
+				background-color: cornflowerblue;
+				z-index: 0;
+			}
+			.li5 {
+				position: absolute;
+				left: 0;
+				transform: translateX(500px) scale(0.8);
+				background-color: cadetblue;
+				z-index: -1;
+			}
+			.li6 {
+				position: absolute;
+				left: 0;
+				transform: translateX(600px) scale(0.65);
+				background-color: darkmagenta;
+				z-index: -2;
+			}
+			.li7 {
+				position: absolute;
+				left: 0;
+				transform: translateX(700px) scale(0.55);
+				background-color: #FF7F50;
+				z-index: -3;
+			}
+			.left_btn {
+				position: absolute;
+				top: calc(50% - 54px);
+				left: 150px;
+				z-index: 2;
+				transform: rotate(180deg);
+			}
+			.right_btn {
+				position: absolute;
+				top: calc(50% - 54px);
+				right: 150px;
+				z-index: 2;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="swiper-container">
+			<img class="left_btn" src="./img/arrow.png" ondragstart="return false;" alt="">
+			<img class="right_btn" src="./img/arrow.png" ondragstart="return false;" alt="">
+			<ul>
+				<li class="li1"></li>
+				<li class="li2"></li>
+				<li class="li3"></li>
+				<li class="li4"></li>
+				<li class="li5"></li>
+				<li class="li6"></li>
+				<li class="li7"></li>
+			</ul>
+		</div>
+	</body>
+	<script>
+		let { log } = console
+		let left_btn = document.getElementsByClassName("left_btn")[0];
+		let right_btn = document.getElementsByClassName("right_btn")[0];
+		let translateX_100 = [-200, -100, 0, 250, 500, 600, 700];
+		let scale_100 = [0.55, 0.65, 0.8, 0.9, 0.8, 0.65, 0.55];
+		let zIndex = [-3, -2, -1, 1, -1, -2, -3];
+		let mousedown_start_clientX, mousedown_end_clientX;
+		let li_obj = {};
+		let key;
+		let li_list = document.querySelectorAll("li");
+		for (let i = 0; i < li_list.length; i++) {
+			li_list[i].addEventListener("mousedown", mousedownHandler)
+			li_list[i].addEventListener("mouseup", mouseupHandler)
+			li_obj[i] = {
+				["li" + i] : li_list[i],
+				current: i,
+				next: i+1 === li_list.length ? 0 : i+1,
+				last: i-1 < 0 ? li_list.length-1 : i-1,
+				zIndex: getComputedStyle(li_list[i])["zIndex"]
+			}
+		}
+		left_btn.addEventListener("click", leftClickHandler);
+		right_btn.addEventListener("click", rightClickHandler);
+		function mousedownHandler(e) {
+			clearInterval(key)
+			mousedown_start_clientX = e.clientX
+		}
+		function mouseupHandler(e) {
+			clearInterval(key)
+			mousedown_end_clientX = e.clientX
+			if (mousedown_start_clientX > mousedown_end_clientX) {
+				rightClickHandler()
+			} else if (mousedown_start_clientX < mousedown_end_clientX) {
+				leftClickHandler()
+			} else if (mousedown_start_clientX === mousedown_end_clientX) {
+				key = setInterval(() => {
+					autoCarousel()
+				}, 2000)
+			}
+		}
+		function leftClickHandler(e) {
+			clearInterval(key)
+			for (let i in li_obj) {
+				li_obj[i].current = li_obj[i].current + 1 > li_list.length - 1 ?  0 : li_obj[i].current + 1;
+				li_obj[i].zIndex = zIndex[li_obj[i].current]
+				Object.assign(li_obj[i]["li" + i].style, {
+					transform: "translateX(" + translateX_100[li_obj[i].current] + "px) scale(" + scale_100[li_obj[i].current] + ")",
+					transitionDuration: "300ms",
+					zIndex: li_obj[i].zIndex
+				})
+			}
+			key = setInterval(() => {
+				autoCarousel()
+			},2000)
+		}
+		function rightClickHandler(e) {
+			clearInterval(key)
+			for (let i in li_obj) {
+				li_obj[i].current = li_obj[i].current - 1 < 0 ?  li_list.length - 1 : li_obj[i].current - 1;
+				li_obj[i].zIndex = zIndex[li_obj[i].current]
+				Object.assign(li_obj[i]["li" + i].style, {
+					transform: "translateX(" + translateX_100[li_obj[i].current] + "px) scale(" + scale_100[li_obj[i].current] + ")",
+					transitionDuration: "300ms",
+					zIndex: li_obj[i].zIndex
+				})
+			}
+			key = setInterval(() => {
+				autoCarousel()
+			},2000) 
+		}
+		init();
+		function init() {
+			key = setInterval(() => {
+				autoCarousel()
+			}, 2000)
+		}
+		function autoCarousel() {
+			for (let i in li_obj) {
+				li_obj[i].current = li_obj[i].current - 1 < 0 ?  li_list.length - 1 : li_obj[i].current - 1;
+				li_obj[i].zIndex = zIndex[li_obj[i].current]
+				Object.assign(li_obj[i]["li" + i].style, {
+					transform: "translateX(" + translateX_100[li_obj[i].current] + "px) scale(" + scale_100[li_obj[i].current] + ")",
+					transitionDuration: "300ms",
+					zIndex: li_obj[i].zIndex,
+				})
+			}
+		}
+		
+	</script>
+</html>
