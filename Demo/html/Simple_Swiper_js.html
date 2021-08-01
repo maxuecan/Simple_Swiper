@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="stylesheet" href="../css/index.css">
+		<title></title>
+	</head>
+	<body>
+		<!-- 第一：创建容器 -->
+		<div class="swiper_container"></div>
+	</body>
+	<script type="module">
+		// 第二：引入模块
+		import Swiper from '../js/Swiper.js'
+		// 第三：更具容器创建swiper
+		let swiper = new Swiper('swiper_container')
+		// 设置图片/设置子容器容量
+		swiper.setImgList([
+			'../img/arrow.png',
+			'../img/arrow.png',
+			'../img/arrow.png',
+			'../img/arrow.png',
+			'../img/arrow.png',
+			'../img/arrow.png',
+			'../img/arrow.png'
+		])
+		// 初始化
+		swiper.init()
+		// 自动轮播
+		swiper.autoCarousel()
+	</script>
+</html>

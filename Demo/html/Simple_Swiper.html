@@ -147,7 +147,8 @@
 			mousedown_end_clientX = e.clientX
 			if (mousedown_start_clientX > mousedown_end_clientX) {
 				rightClickHandler()
-			} else if (mousedown_start_clientX < mousedown_end_clientX) {
+			} 
+			else if (mousedown_start_clientX < mousedown_end_clientX) {
 				leftClickHandler()
 			} else if (mousedown_start_clientX === mousedown_end_clientX) {
 				key = setInterval(() => {
